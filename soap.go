@@ -258,8 +258,13 @@ func (p *process) doRequest(url string) ([]byte, error) {
 		p.Client.config.Logger.LogResponse(p.Request.Method, dump)
 	}
 
+	// Return response body if error
 	if resp.StatusCode < 200 || resp.StatusCode >= 400 {
-		return nil, errors.New("unexpected status code: " + resp.Status)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Printf("Can't read error response body")
+		}
+		return body, errors.New("unexpected status code: " + resp.Status)
 	}
 
 	return ioutil.ReadAll(resp.Body)
