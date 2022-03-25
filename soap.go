@@ -188,9 +188,7 @@ func (c *Client) Do(req *Request) (res *Response, err error) {
 	var soap SoapEnvelope
 	if err != nil {
 		res = &Response{
-			Body:    soap.Body.Contents,
-			Header:  soap.Header.Contents,
-			Payload: p.Payload,
+			Body: b,
 		}
 		return res, ErrorWithPayload{err, p.Payload}
 	}
