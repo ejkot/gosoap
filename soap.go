@@ -185,11 +185,16 @@ func (c *Client) Do(req *Request) (res *Response, err error) {
 	}
 
 	b, err := p.doRequest(c.Definitions.Services[0].Ports[0].SoapAddresses[0].Location)
+	var soap SoapEnvelope
 	if err != nil {
-		return nil, ErrorWithPayload{err, p.Payload}
+		res = &Response{
+			Body:    soap.Body.Contents,
+			Header:  soap.Header.Contents,
+			Payload: p.Payload,
+		}
+		return res, ErrorWithPayload{err, p.Payload}
 	}
 
-	var soap SoapEnvelope
 	// err = xml.Unmarshal(b, &soap)
 	// error: xml: encoding "ISO-8859-1" declared but Decoder.CharsetReader is nil
 	// https://stackoverflow.com/questions/6002619/unmarshal-an-iso-8859-1-xml-input-in-go
